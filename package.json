@@ -36,5 +36,8 @@
     "url": "git://github.com/janne.kalliokorpi/messageApp.git"
   },
   "author": "janne.kalliokorpi",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "moment": "^2.18.1"
+  }
 }
