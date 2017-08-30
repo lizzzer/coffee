@@ -1,4 +1,3 @@
-var Promise = require('bluebird');
 // api/services/UsersService.js
 
 module.exports = {

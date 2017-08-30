@@ -21,6 +21,6 @@ module.exports = {
   //   connection: 'someMongodbServer'
   // }
   port: 1337,
-  c_hostname:'54.173.39.190'
+  c_hostname:'172.31.36.10'
 
 };
