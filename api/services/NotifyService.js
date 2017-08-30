@@ -7,7 +7,7 @@ module.exports = {
   sendNotify: function(options, done) {
 
     var options = {
-      uri: sails.config.pass.notify_uri,
+      uri: sails.config.notify_uri,
       method: 'POST',
       json: {
         "text": "Kahvia tulossa :)"

@@ -193,7 +193,6 @@ module.exports = {
     User.findOne({
       name: params.name
     }).exec(function(err, useri) {
-      console.log('nykyinenuseri:' + useri);
       if (typeof useri.points !== 'undefined') {
         curPoints = useri.points;
       }
