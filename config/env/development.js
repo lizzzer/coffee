@@ -21,6 +21,6 @@ module.exports = {
   //   connection: 'someMongodbServer'
   // }
   port: 1337,
-  c_hostname:'ec2-54-173-39-190.compute-1.amazonaws.com'
+  c_hostname: 'localhost'
 
 };
