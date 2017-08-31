@@ -16,7 +16,7 @@ setTimeout(function sunrise () {
       <li class="clearfix">
         <div class="step">
           <% _.each(users, function(user) {%>
-            <a href="http://<%= sails.config.c_hostname%>:<%= sails.config.port%>/coffee/doPageLogin?name=<%=user.name%>"><%=user.name%></a><br/>
+            <p><a href="http://<%= sails.config.c_hostname%>:<%= sails.config.port%>/coffee/doPageLogin?name=<%=user.name%>"><%=user.name%></a></p>
           <% }) %>
         </div>
       </li>
@@ -24,7 +24,7 @@ setTimeout(function sunrise () {
         <div class="step">
           <h2>Joku muu</h2>
             <form method="post" action="http://<%= sails.config.c_hostname%>:<%= sails.config.port%>/coffee/doAddUser">
-            <input type="text" name="name" /> <input type="submit" value="Lisää" />
+            <input type="text" name="name" /> <input class="button button-primary" type="submit" value="Lisää" />
           </form>
         </div>
       </li>
