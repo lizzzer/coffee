@@ -14,4 +14,3 @@ module.exports = {
     points : { type: 'integer' }
   }
 };
-

@@ -10,6 +10,6 @@
  */
 
 module.exports.models = {
- connections: 'sails-mongo',
+ connection: 'sailsMongoDBServer',
  migrate: 'safe'
 };

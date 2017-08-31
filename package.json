@@ -28,7 +28,7 @@
   },
   "scripts": {
     "debug": "node debug app.js",
-    "start": "node app.js"
+    "start": "mongod --fork --logpath dblog/mongo.log && node app.js"
   },
   "main": "app.js",
   "repository": {
