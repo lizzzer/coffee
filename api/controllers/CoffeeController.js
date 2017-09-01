@@ -18,7 +18,7 @@ module.exports = {
       httpOnly: true
     });
 
-    return res.redirect('http://'+sails.config.c_hostname+':'+sails.config.port);
+    return res.redirect('http://' + sails.config.c_hostname + ':' + sails.config.port);
 
   },
 
@@ -34,7 +34,9 @@ module.exports = {
         json.options = options;
       }
 
+
       if (userName == undefined) {
+
         return res.view('loginpage', json);
       }
 
@@ -102,7 +104,7 @@ module.exports = {
           json.history_detail = hist_detail;
           json.moment = moment;
 
-          return res.view('logpage', json);
+          sails.controllers.coffee.doPage(req, res, options);
         });
 
       });
@@ -119,45 +121,42 @@ module.exports = {
     var maintenance_config = sails.config.custom[maintenance_id];
 
     if (userName == undefined || maintenance_config == undefined) {
-      return res.view('loginpage');
-    }
+      console.log('täsä');
+      sails.controllers.coffee.doPage(req, res);
+    } else {
 
-    MachineService.doAddRow(maintenance_config, userName, function(err, data) {
+      MachineService.doAddRow(maintenance_config, userName, function(err, data) {
 
-      if (err) {
-        console.log("error happened");
-
-        var options = {
-          points: 0,
-          showModal: 1,
-          message: 'Vähän turhan innokasta. ' + err
-        };
-
-        sails.controllers.coffee.doPage(req, res, options);
-
-      } else {
-
-        UserService.updateUserPoints(userName, maintenance_config.points, function(err, data) {
-
+        if (err) {
+          console.log("error happened");
           var options = {
-            points: maintenance_config.points,
+            points: 0,
             showModal: 1,
-            message: maintenance_config.message
+            message: 'Vähän turhan innokasta. ' + err
           };
 
           sails.controllers.coffee.doPage(req, res, options);
 
-        });
-      }
-    });
+        } else {
+          UserService.updateUserPoints(userName, maintenance_config.points, function(err, data) {
+            var options = {
+              points: maintenance_config.points,
+              showModal: 1,
+              message: maintenance_config.message
+            };
+            sails.controllers.coffee.doPage(req, res, options);
+          });
+        }
+      });
+    }
 
   },
 
-	doDeleteMachineById: function(req, res) {
+  doDeleteMachineById: function(req, res) {
 
-		var params = req.params.all();
+    var params = req.params.all();
 
-		Machine.destroy({
+    Machine.destroy({
       machine_id: params.machine_id
     }).exec(function(err) {
       if (err) {
@@ -167,7 +166,7 @@ module.exports = {
       return res.ok();
     });
 
-	},
+  },
 
   doDeleteUser: function(req, res) {
 
