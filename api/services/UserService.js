@@ -4,9 +4,11 @@ module.exports = {
 
     doGetAllUsers: function(callback) {
 
-      console.log('Getting all users');
+      var userQuery = User.find();
+      var sortString = 'name ASC';
+      userQuery.sort(sortString);
 
-      User.find(function(err, users) {
+      userQuery.exec(function(err, users) {
         if (err) {
           return res.serverError(err);
         }

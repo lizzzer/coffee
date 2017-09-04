@@ -121,7 +121,6 @@ module.exports = {
     var maintenance_config = sails.config.custom[maintenance_id];
 
     if (userName == undefined || maintenance_config == undefined) {
-      console.log('täsä');
       sails.controllers.coffee.doPage(req, res);
     } else {
 
