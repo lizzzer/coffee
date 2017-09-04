@@ -26,10 +26,11 @@ module.exports = {
       MachineService.doGetLastMachineByMachineIdUserName(user,maintenance_config.machine_id,function (err, date) {
 
         var diff = 0;
-        
+
         if (date != undefined) {
           diff = Math.abs(new Date().getTime() - date.createdAt.getTime()) / 3600000;
         }
+
 
         if (maintenance_config.timeout-diff<=0 || date == undefined) {
           MachineService._createRow(maintenance_config, user);
