@@ -113,6 +113,36 @@ module.exports = {
 
   },
 
+  doShowMachineMaintenanceAsJSON: function(req, res) {
+
+    var params = req.params.all();
+
+    UserService.doGetAllUsers(function(err, resp) {
+
+      json = resp;
+
+      if (typeof options == 'object') {
+        json.options = options;
+      }
+
+      MachineService.doGetMachineHistory(function(err, hist) {
+
+        json.history = hist;
+
+        MachineService.doGetMachineDetailedHistory(params.machine_id, function(err, hist_detail) {
+
+          json.history_detail = hist_detail;
+          json.moment = moment;
+
+          return res.json(json.history_detail);
+        });
+
+      });
+
+    });
+
+  },
+
   doMachineMaintenance: function(req, res) {
 
     var userName = req.cookies.userName;
@@ -220,22 +250,9 @@ module.exports = {
 
     var params = req.params.all();
 
-    User.create({
-      name: params.name,
-      points: 0
-    }).exec(function createCB(err, created) {
-
-      User.find(function(err, users) {
-        if (err) {
-          return res.serverError(err);
-        }
-
-        sails.controllers.coffee.doPage(req, res);
-
-      });
-
+    UserService.doAddUser(params.name, function(err, data) {
+      sails.controllers.coffee.doPageLogin(req, res);
     });
-
 
   }
 
