@@ -18,6 +18,7 @@ module.exports = {
 			json = hist;
 			json.history = hist;
 			json.moment = moment;
+			json.layout='plain';
 
 			return res.view('stat_history', json);
 
@@ -31,6 +32,7 @@ module.exports = {
 
 		UserService.doGetAllUsers(function(err, resp) {
 			json = resp;
+			json.layout='plain';
 			return res.view('stat_points', json);
 		});
 	}
