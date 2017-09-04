@@ -14,7 +14,7 @@ module.exports = {
     var params = req.params.all();
 
     res.cookie('userName', params.name, {
-      maxAge: 900000,
+      maxAge: new Date(Date.now() + 3600000),
       httpOnly: true
     });
 
@@ -104,7 +104,7 @@ module.exports = {
           json.history_detail = hist_detail;
           json.moment = moment;
 
-          sails.controllers.coffee.doPage(req, res, options);
+          return res.view('logpage', json);
         });
 
       });

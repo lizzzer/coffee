@@ -14,7 +14,7 @@ setTimeout(function sunrise () {
           <div class="sprite one"></div>
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/225528/coffeecup.svg" alt="The hand has 5 fingers">
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%>:<%= sails.config.port || 1337%>/coffee/notify">Keitin kahvia.</a>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify">Keitin kahvia.</a>
           </p>
         </div>
       </li>
@@ -23,7 +23,7 @@ setTimeout(function sunrise () {
           <div class="sprite two"></div>
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/278578/Petri-Dish.svg" alt="The hand has 5 fingers">
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%>:<%= sails.config.port || 1337%>/coffee/doMachineMaintenance?maintenance_id=maintenance_1">Tyhjensin astianpesukoneen</a>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_1">Tyhjensin astianpesukoneen</a>
           </p>
         </div>
       </li>
@@ -32,7 +32,7 @@ setTimeout(function sunrise () {
           <div class="sprite three"></div>
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/73141/brush.svg" alt="The hand has 5 fingers">
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%>:<%= sails.config.port || 1337%>/coffee/doMachineMaintenance?maintenance_id=maintenance_2">Pesin baristan</a>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_2">Pesin baristan</a>
           </p>
         </div>
       </li>
@@ -52,8 +52,8 @@ setTimeout(function sunrise () {
       </ul>
       <ul class="link-list">
         <h2>Logs</h2>
-          <a href="http://<%= sails.config.c_hostname%>:<%= sails.config.port %>/coffee/doShowMachineMaintenance?machine_id=1">Astianpesukone</a><br/>
-          <a href="http://<%= sails.config.c_hostname%>:<%= sails.config.port %>/coffee/doShowMachineMaintenance?machine_id=2">Barista</a>
+          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=1">Astianpesukone</a><br/>
+          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=2">Barista</a>
       </ul>
     </div>
   </div>
