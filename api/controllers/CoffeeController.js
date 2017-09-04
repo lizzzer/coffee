@@ -18,7 +18,7 @@ module.exports = {
       httpOnly: true
     });
 
-    return res.redirect('http://' + sails.config.c_hostname + ':' + sails.config.port);
+    return res.redirect('http://' + sails.config.c_hostname + sails.config.c_port);
 
   },
 
