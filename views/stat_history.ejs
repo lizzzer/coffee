@@ -1,5 +1,5 @@
 
 
   <% _.each(json.history, function(machine) {%>
-    <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%>. Thanks to: *<%=machine.user%>*\n
+    <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%>. Thanks to: *<%=machine.user%>*
   <% }) %>
