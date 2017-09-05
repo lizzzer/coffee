@@ -48,7 +48,7 @@ module.exports = {
 				if (date != undefined) {
 					diff = Math.abs(new Date().getTime() - date.getTime()) / 3600000;
 
-					if (diff>18) {
+					if (diff>36) {
 
 						var text = "Simonellaa ei ole kuulkaas putsattu sitten "+date+"\nKoittakaas nyt";
 
@@ -64,6 +64,17 @@ module.exports = {
 				}
 			} else {
 				json.status=false;
+
+				var text = "Putsatkaas nyt joku se Barista";
+
+				NotifyService.sendNotifyToSlack(text, function(err) {
+					if (err) {
+						return res.serverError(err);
+					}
+
+					return res.ok();
+				});
+
 			}
 
 			return res.view('stat_status', json);
