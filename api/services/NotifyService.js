@@ -22,6 +22,25 @@ module.exports = {
       }
     });
 
+  },
+
+  sendNotifyToSlack: function(text, callback) {
+
+    var options = {
+      uri: sails.config.notify_uri,
+      method: 'POST',
+      json: {
+        "text": text
+      }
+    };
+
+    request(options, function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body.id) // Print the shortened url.
+      } else {
+        console.log(response);
+      }
+    });
 
   }
 

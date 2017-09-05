@@ -26,6 +26,51 @@ module.exports = {
 
 	},
 
+	doCheckMaintenanceStatus: function(req, res) {
+
+		var params = req.params.all();
+
+		// hardcode machine_id for now
+		// @todo add support to different status checks with different id:s
+
+		MachineService.doGetMachineDetailedHistory('2', function(err, hist_detail) {
+
+			var json = hist_detail;
+			json.moment = moment;
+			json.status = true;
+			json.layout='plain';
+
+			if (hist_detail.length>0 && hist_detail[0].createdAt!=undefined) {
+
+				date = hist_detail[0].createdAt;
+				var diff = 0;
+
+				if (date != undefined) {
+					diff = Math.abs(new Date().getTime() - date.getTime()) / 3600000;
+
+					if (diff>18) {
+
+						var text = "Simonellaa ei ole kuulkaas putsattu sitten "+date+"\nKoittakaas nyt";
+
+						NotifyService.sendNotifyToSlack(text, function(err) {
+							if (err) {
+								return res.serverError(err);
+							}
+
+							return res.ok();
+						});
+					}
+
+				}
+			} else {
+				json.status=false;
+			}
+
+			return res.view('stat_status', json);
+		});
+
+	},
+
 	doShowPoints: function(req, res) {
 
 		var params = req.params.all();

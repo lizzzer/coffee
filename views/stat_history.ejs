@@ -1,7 +1,5 @@
-<ul>
+
 
   <% _.each(json.history, function(machine) {%>
-    <li> <%=machine.history_message%> <b><%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%>.</b> Thanks to: <%=machine.user%> <li/>
+    <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%>. Thanks to: *<%=machine.user%>*\n
   <% }) %>
-
-</ul>
