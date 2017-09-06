@@ -18,28 +18,28 @@ module.exports = {
   },
 
   doAddRow: function(maintenance_config, user, callback) {
-    if (maintenance_config.timeout>0) {
-      MachineService.doGetLastMachineByMachineIdUserNameActionId(user,maintenance_config.machine_id, maintenance_config.action_id,function (err, date) {
+    if (maintenance_config.timeout > 0) {
+      MachineService.doGetLastMachineByMachineIdUserNameActionId(user, maintenance_config.machine_id, maintenance_config.action_id, function(err, date) {
 
         var diff = 0;
         if (date != undefined) {
           diff = Math.abs(new Date().getTime() - date.createdAt.getTime()) / 3600000;
         }
 
-        if (maintenance_config.timeout-diff<=0 || date == undefined) {
+        if (maintenance_config.timeout - diff <= 0 || date == undefined) {
           MachineService._createRow(maintenance_config, user);
-          callback("","jei");
+          callback("", "jei");
         } else {
-          var diff = (maintenance_config.timeout-diff).toFixed(2);
-          var message = 'Odottelehan vielä '+diff+' tuntia';
+          var diff = (maintenance_config.timeout - diff).toFixed(2);
+          var message = 'Odottelehan vielä ' + diff + ' tuntia';
           console.log(message);
-          callback(message,"nah");
+          callback(message, "nah");
         }
       });
 
     } else {
       MachineService._createRow(id, action, user);
-      callback("","jei");
+      callback("", "jei");
     }
   },
 
@@ -48,11 +48,11 @@ module.exports = {
       limit: 10,
       sort: 'createdAt DESC'
     }).exec(function(err, result) {
-      callback("",result);
+      callback("", result);
     });
   },
 
-  doGetMachineDetailedHistory: function(machine_id,callback) {
+  doGetMachineDetailedHistory: function(machine_id, callback) {
     Machine.find({
       where: {
         machine_id: machine_id,
@@ -60,7 +60,7 @@ module.exports = {
       limit: 20,
       sort: 'createdAt DESC'
     }).exec(function(err, result) {
-      callback("",result);
+      callback("", result);
     });
   },
 
@@ -90,13 +90,14 @@ module.exports = {
       sort: 'createdAt DESC'
     }).exec(function(err, result) {
 
-        if (callback != 'undefined') {
-          callback("",result[0]);
-        }
-        console.log(result);
+      if (callback != 'undefined') {
+        callback("", result[0]);
+      }
+      console.log(result);
     });
 
   },
+  
   doGetLastMachineByMachineIdUserNameActionId: function(userName, machine_id, action_id, callback) {
     var query = Machine.find({
       where: {
@@ -108,11 +109,11 @@ module.exports = {
       sort: 'createdAt DESC'
     }).exec(function(err, result) {
 
-        if (callback != 'undefined') {
-          callback("",result[0]);
-        }
+      if (callback != 'undefined') {
+        callback("", result[0]);
+      }
 
-        console.log(result);
+      console.log(result);
     });
   }
 };

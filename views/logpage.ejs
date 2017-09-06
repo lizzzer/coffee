@@ -4,7 +4,7 @@
       <li class="clearfix">
         <div>
           <% _.each(history_detail, function(machine) {%>
-             <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%> - <%=machine.user%><br/>
+             <%=machine.history_message%> <%= moment(machine.createdAt).local().format( 'MMM-DD: HH:mm')%> - <%=machine.user%><br/>
           <% }) %>
         </div>
       </li>
@@ -19,7 +19,7 @@
       <ul class="link-list">
         <h2>Activity</h2>
         <% _.each(history, function(machine) {%>
-           <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%> <br/>
+           <%=machine.history_message%> <%= moment(machine.createdAt).local().format( 'MMM-DD: HH:mm')%> <br/>
         <% }) %>
       </ul>
       <ul class="link-list">

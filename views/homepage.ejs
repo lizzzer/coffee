@@ -69,7 +69,7 @@ setTimeout(function sunrise () {
       <ul class="link-list">
         <h2>Activity</h2>
         <% _.each(history, function(machine) {%>
-           <%=machine.history_message%> <%= moment(machine.createdAt).format( 'MMM-DD: HH:mm')%> <br/>
+           <%=machine.history_message%> <%= moment(machine.createdAt).local().format( 'MMM-DD: HH:mm')%> <br/>
         <% }) %>
       </ul>
       <ul class="link-list">
