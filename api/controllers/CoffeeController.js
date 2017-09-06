@@ -55,32 +55,39 @@ module.exports = {
    */
   notify: function(req, res) {
 
+    var params = req.params.all();
     var userName = req.cookies.userName;
-    var coffee_config = sails.config.custom.coffee_config;
+    var notify_id = params.notify_id;
+    var notify_config = sails.config.custom[notify_id];
 
     if (userName == undefined) {
       return res.view('loginpage');
     }
 
-    NotifyService.sendNotify({}, function(err) {
-      if (err) {
-        return res.serverError(err);
-      }
-
-      return res.ok();
-    });
-
-    UserService.updateUserPoints(userName, coffee_config.points, function(err, data) {
+    if (notify_config==undefined) {
+      return res.redirect('http://' + sails.config.c_hostname + sails.config.c_port);
+    } else {
 
       var options = {
-        points: coffee_config.points,
+        points: notify_config.points,
         showModal: 1,
-        message: coffee_config.message
+        message: notify_config.message
       };
 
-      sails.controllers.coffee.doPage(req, res, options);
+      NotifyService.sendNotifyToSlack(userName+": "+notify_config.messageToEndPoint, function(err) {
+        if (err) {
+          sails.log(err);
+        }
+        if (notify_config.points>0) {
+          UserService.updateUserPoints(userName, notify_config.points, function(err, data) {
+            sails.log('updated user points');
+          });
+        }
 
-    });
+      });
+
+    }
+    sails.controllers.coffee.doPage(req, res, options);
   },
 
   doShowMachineMaintenance: function(req, res) {

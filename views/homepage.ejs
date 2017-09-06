@@ -13,8 +13,10 @@ setTimeout(function sunrise () {
         <div class="step">
           <div class="sprite one"></div>
           <p>
-            <img class="hand-has-five-fingers" src="https://openclipart.org/download/225528/coffeecup.svg" alt="The hand has 5 fingers">
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify">Keitin kahvia.</a>
+            <img class="hand-has-five-fingers" src="https://openclipart.org/download/225528/coffeecup.svg" alt="The hand has 5 fingers">&nbsp;Kahvia
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify?notify_id=notify_1">Keitin kahvia.</a>
           </p>
         </div>
       </li>
@@ -22,8 +24,21 @@ setTimeout(function sunrise () {
         <div class="step">
           <div class="sprite two"></div>
           <p>
-            <img class="hand-has-five-fingers" src="https://openclipart.org/download/278578/Petri-Dish.svg" alt="The hand has 5 fingers">
+            <img class="hand-has-five-fingers" src="https://openclipart.org/download/278578/Petri-Dish.svg" alt="The hand has 5 fingers">Yleiset taskit</p>
+          <p>
             <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_1">Tyhjensin astianpesukoneen</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_5">Kävin kaupassa</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_6">Siistin keittiön</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_7">Vein pullot</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify?notify_id=notify_2">Juon kaljaa</a>
           </p>
         </div>
       </li>
@@ -31,8 +46,15 @@ setTimeout(function sunrise () {
         <div class="step">
           <div class="sprite three"></div>
           <p>
-            <img class="hand-has-five-fingers" src="https://openclipart.org/download/73141/brush.svg" alt="The hand has 5 fingers">
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_2">Pesin baristan</a>
+            <img class="hand-has-five-fingers" src="https://openclipart.org/download/73141/brush.svg" alt="The hand has 5 fingers">&nbsp;Barista</p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_2">Peruspesu</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_3">Pesuainepesu</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_4">Sihdin puhdistus</a>
           </p>
         </div>
       </li>
