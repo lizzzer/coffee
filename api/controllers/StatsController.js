@@ -53,16 +53,44 @@ module.exports = {
 			}
 
 			if (!json.noWinners) {
-				var text = "*And the hero of the week is*\n *"+json.winnerName+"* with amazing *"+json.winnerPoints+"* points!\nGood work mate!";
+				var text = {
+	        "attachments": [
+	        {
+	            "fallback": "Nothing here anymore.",
+	            "color": "#36a64f",
+	            "pretext": "And the week has gone yet again..",
+	            "author_name": "Philanthropist",
+	            "title": "Hero of the week award",
+	            "text": json.winnerName+" with "+json.winnerPoints+" points!\nWe salute you!",
+							"image_url": "http://icons.iconarchive.com/icons/iconshock/super-vista-business/256/trophy-icon.png",
+	            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+	            "ts": +Math.floor(new Date().valueOf() / 1000)
+	        }
+	      ]
+			};
 			} else {
-				var text = "No heroes this week... So sad.."
+				var text = {
+					"attachments": [
+					{
+							"fallback": "Nothing here anymore.",
+							"color": "#36a64f",
+							"pretext": "And the week has gone yet again..",
+							"author_name": "Philanthropist",
+							"title": "Hero of the week award",
+							"text": "No heroes this week.. So Sad..",
+							"image_url": "https://www.darkknightarmoury.com/images/Category/medium/504.png",
+							"footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
+							"ts": +Math.floor(new Date().valueOf() / 1000)
+					}
+				]
+			};
 			}
 
 			if (params.populate=='true') {
 				json.layout='plain';
 				return res.view('stat_hero', json);
 			} else {
-				NotifyService.sendNotifyToSlack(text, function(err) {
+				NotifyService.sendRichNotifyToSlack(text, function(err) {
 					if (err) {
 						return res.serverError(err);
 					}

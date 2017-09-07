@@ -24,6 +24,24 @@ module.exports = {
 
   },
 
+  sendRichNotifyToSlack: function(text, callback) {
+
+    var options = {
+      uri: sails.config.notify_uri,
+      method: 'POST',
+      json: text
+    };
+
+    request(options, function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        callback(error);
+      } else {
+        callback(error);
+      }
+    });
+
+  },
+
   sendNotifyToSlack: function(text, callback) {
 
     var options = {
