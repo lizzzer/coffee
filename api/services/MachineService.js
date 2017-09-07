@@ -7,7 +7,8 @@ module.exports = {
       machine_id: maintenance_config.machine_id,
       action: maintenance_config.action_id,
       history_message: maintenance_config.history_message,
-      user: user
+      user: user,
+      awarded_points: maintenance_config.points
     }).exec(function(err, machine) {
       if (err) {
         return res.serverError(err);
@@ -47,6 +48,16 @@ module.exports = {
     Machine.find({
       limit: 10,
       sort: 'createdAt DESC'
+    }).exec(function(err, result) {
+      callback("", result);
+    });
+  },
+
+  doGetMachineHistoryFromDate: function(date,callback) {
+    Machine.find().where({
+      createdAt: {
+            '>=': date
+        }
     }).exec(function(err, result) {
       callback("", result);
     });
@@ -97,7 +108,7 @@ module.exports = {
     });
 
   },
-  
+
   doGetLastMachineByMachineIdUserNameActionId: function(userName, machine_id, action_id, callback) {
     var query = Machine.find({
       where: {

@@ -13,7 +13,11 @@ module.exports = {
 
     action : { type: 'integer' },
 
-    user : { type: 'string' }
+    user : { type: 'string' },
+
+    awarded_points : { type: 'integer' },
+
+    history_message : { type: 'string' }
+
   }
 };
-

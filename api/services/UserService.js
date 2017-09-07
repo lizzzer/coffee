@@ -51,6 +51,15 @@ module.exports = {
     });
   },
 
+  doGetHeroOfTheWeek: function(callback) {
+
+    var oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    MachineService.doGetMachineHistoryFromDate(oneWeekAgo, callback);
+
+  },
+
 
   updateUserPoints: function(name, points, callback) {
 

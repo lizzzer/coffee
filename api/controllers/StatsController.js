@@ -25,6 +25,51 @@ module.exports = {
 		});
 
 	},
+	doGetHeroOfTheWeek: function(req, res) {
+
+		UserService.doGetHeroOfTheWeek( function(err, data) {
+			var json = new Object();
+			var matrix = {};
+			for (var i = 0; i < data.length; i++){
+			    var machine = data[i];
+					if (machine.user!=undefined && machine.user!='' && machine.awarded_points!=undefined) {
+						if ( matrix[machine.user] == undefined) {
+								matrix[machine.user] = machine.awarded_points;
+						} else {
+							matrix[machine.user] = matrix[machine.user]+machine.awarded_points;
+						}
+
+					}
+			}
+			if (!_.isEmpty(matrix)) {
+				var winner = _.max(Object.keys(matrix), function (o) { return matrix[o]; });
+				json.winnerName = winner;
+				json.winnerPoints = matrix[winner];
+				json.noWinners = false;
+			} else {
+				json.noWinners = true;
+			}
+
+			if (!json.noWinners) {
+				var text = "*And the hero of the week is*\n *"+json.winnerName+"* with amazing *"+json.winnerPoints+"* points!\nGood work mate!";
+			} else {
+				var text = "No heroes this week... So sad.."
+			}
+
+			NotifyService.sendNotifyToSlack(text, function(err) {
+				if (err) {
+					return res.serverError(err);
+				}
+
+				return res.ok();
+			});
+			//json.layout='plain';
+
+			//return res.view('stat_hero', json);
+
+		});
+
+	},
 
 	doCheckMaintenanceStatus: function(req, res) {
 
