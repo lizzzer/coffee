@@ -27,6 +27,8 @@ module.exports = {
 	},
 	doGetHeroOfTheWeek: function(req, res) {
 
+		var params = req.params.all();
+
 		UserService.doGetHeroOfTheWeek( function(err, data) {
 			var json = new Object();
 			var matrix = {};
@@ -56,16 +58,17 @@ module.exports = {
 				var text = "No heroes this week... So sad.."
 			}
 
-			NotifyService.sendNotifyToSlack(text, function(err) {
-				if (err) {
-					return res.serverError(err);
-				}
-
-				return res.ok();
-			});
-			//json.layout='plain';
-
-			//return res.view('stat_hero', json);
+			if (params.populate=='true') {
+				json.layout='plain';
+				return res.view('stat_hero', json);
+			} else {
+				NotifyService.sendNotifyToSlack(text, function(err) {
+					if (err) {
+						return res.serverError(err);
+					}
+					return res.ok();
+				});
+			}
 
 		});
 

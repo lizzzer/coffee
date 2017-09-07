@@ -53,13 +53,15 @@ module.exports = {
 
   doGetHeroOfTheWeek: function(callback) {
 
-    var oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    //var oneWeekAgo = new Date();
+    //oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    var d = new Date();
+    var day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6:1);
+    var monday = new Date(d.setDate(diff));
 
-    MachineService.doGetMachineHistoryFromDate(oneWeekAgo, callback);
+    MachineService.doGetMachineHistoryFromDate(monday, callback);
 
   },
-
 
   updateUserPoints: function(name, points, callback) {
 
