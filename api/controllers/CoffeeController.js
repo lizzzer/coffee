@@ -59,12 +59,13 @@ module.exports = {
     var userName = req.cookies.userName;
     var notify_id = params.notify_id;
     var notify_config = sails.config.custom[notify_id];
+    var notify_cookie = req.cookies.notifyId;
 
     if (userName == undefined) {
       return res.view('loginpage');
     }
 
-    if (notify_config==undefined) {
+    if (notify_config==undefined || notify_cookie==notify_id) {
       return res.redirect('http://' + sails.config.c_hostname + sails.config.c_port);
     } else {
 
@@ -84,10 +85,16 @@ module.exports = {
           });
         }
 
+        res.cookie('notifyId', notify_id, {
+          expires: new Date(Date.now() + 36000),
+          httpOnly: true
+        });
+        sails.controllers.coffee.doPage(req, res, options);
+
       });
 
     }
-    sails.controllers.coffee.doPage(req, res, options);
+
   },
 
   doShowMachineMaintenance: function(req, res) {

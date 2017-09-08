@@ -4,8 +4,9 @@
 
 module.exports.custom = {
 
-    notify_1: {points: 5, messageToEndPoint:'Kahvia tulossa :)', message: 'Kerroin kaikille!'},
+    notify_1: {points: 5, messageToEndPoint:'Kahvia tulossa :)', message: 'Kerroin kaikille!', timeout:1},
     notify_2: {points: 0, messageToEndPoint:' juo olutta, and damn it good! _Ede, bibe, lude, post mortem nulla voluptas._', message: 'Kutsuin kavereita! Ede, bibe, lude, post mortem nulla voluptas.'},
+    notify_3: {points: 5, messageToEndPoint:'Teetä hautumassa :)', message: 'Kerroin kaikille!', timeout:1},
     maintenance_1: { action_id:1, machine_id:'1', points:10, maintenance_id:1, history_message:'Astianpesukone tyhjennetty', message:'Jei! Taas on astioita.', timeout:3 },
     maintenance_2: { action_id:2, machine_id:'2', points:15, maintenance_id:2, history_message:'Baristan peruspesu', message:'Ah! Puhdasta sumppia.', timeout:10},
     maintenance_3: { action_id:3, machine_id:'2', points:10, maintenance_id:3, history_message:'Baristan pesuainepesu', message:'Ah! Pesuaine tekee kummia!', timeout:48},
