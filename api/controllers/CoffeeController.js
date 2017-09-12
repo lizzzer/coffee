@@ -34,14 +34,11 @@ module.exports = {
         json.options = options;
       }
 
-
       if (userName == undefined) {
-
         return res.view('loginpage', json);
       }
 
       MachineService.doGetMachineHistory(function(err, hist) {
-
         json.history = hist;
         json.moment = moment;
         return res.view('homepage', json);
@@ -90,6 +87,48 @@ module.exports = {
           httpOnly: true
         });
         sails.controllers.coffee.doPage(req, res, options);
+
+      });
+
+    }
+
+  },
+
+  eventNotify: function(req, res) {
+
+    var params = req.params.all();
+    var userName = req.cookies.userName;
+    var notify_id = params.notifyId;
+    var notify_config = sails.config.custom[notify_id];
+    var notify_cookie = req.cookies.notifyId;
+
+    if (userName == undefined) {
+      return res.view('loginpage');
+    }
+
+    if (notify_config==undefined || notify_cookie==notify_id) {
+      return res.json({triggerRedirect: true});
+    } else {
+
+      var options = {
+        points: notify_config.points,
+        showModal: 1,
+        message: notify_config.message
+      };
+
+      NotifyService.sendNotifyToSlack(userName+": "+notify_config.messageToEndPoint, function(err) {
+        if (err) {
+          sails.log(err);
+        }
+        if (notify_config.points>0) {
+          UserService.updateUserPoints(userName, notify_config.points, function(err, data) {
+            sails.log('updated user points');
+          });
+        }
+
+        sails.sockets.broadcast('mainSockets', 'eventCompleted', { message: userName+notify_config.messageToBroadcast}, req);
+
+        return res.json(options);
 
       });
 
@@ -268,6 +307,69 @@ module.exports = {
       sails.controllers.coffee.doPageLogin(req, res);
     });
 
+  },
+
+  event: function(req, res) {
+
+    // Make sure this is a socket request (not traditional HTTP)
+    if (!req.isSocket) {
+      return res.badRequest();
+    }
+
+    var userName = req.cookies.userName;
+    var maintenance_id = req.param('maintId');
+    var maintenance_config = sails.config.custom[maintenance_id];
+
+    if (userName == undefined || maintenance_config == undefined) {
+      sails.controllers.coffee.doPage(req, res);
+    } else {
+
+      MachineService.doAddRow(maintenance_config, userName, function(err, data) {
+
+        if (err) {
+          console.log("error happened");
+          var options = {
+            points: 0,
+            showModal: 1,
+            message: 'Vähän turhan innokasta. ' + err
+          };
+
+          return res.json(options);
+
+        } else {
+          UserService.updateUserPoints(userName, maintenance_config.points, function(err, data) {
+            var options = {
+              points: maintenance_config.points,
+              showModal: 1,
+              message: maintenance_config.message
+            };
+            return res.json(options);
+          });
+        }
+      });
+    }
+
+    sails.sockets.broadcast('mainSockets', 'eventCompleted', { message: userName+" triggered an event"}, req);
+  },
+
+  joinRoom: function(req, res) {
+
+  // Make sure this is a socket request (not traditional HTTP)
+  if (!req.isSocket) {
+    return res.badRequest();
   }
+
+  var params = req.params.all();
+  var userName = req.cookies.userName;
+
+  sails.sockets.join(req, 'mainSockets');
+  sails.sockets.broadcast('mainSockets', 'roomLog', { message: userName+" joined the party"}, req);
+
+  return res.json({
+    message: 'joined'
+  });
+
+}
+
 
 };

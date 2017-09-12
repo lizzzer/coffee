@@ -32,7 +32,9 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': 'CoffeeController.doPage'
+  '/': 'CoffeeController.doPage',
+  '/event/:maintId': 'CoffeeController.event',
+  '/notify/:notifyId': 'CoffeeController.eventNotify'
 
   /***************************************************************************
   *                                                                          *

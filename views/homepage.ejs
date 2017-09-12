@@ -1,11 +1,40 @@
 <!-- Default home page -->
 <script type="text/javascript">
-setTimeout(function sunrise () {
-  <% if(typeof options !== 'undefined' && options.showModal==1) { %>
-      alert('Hyvä! \n <%=options.message%> \n Sait <%=options.points%> pistettä!')
-  <% } %>
-}, 0);
+   setTimeout(function sunrise () {  }, 0);
 </script>
+
+<!-- Simply include the sails.io.js script, and a client socket will be created and auto-connected for you -->
+<script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+
+<script type="text/javascript">
+
+var doubleClickPrevent=false;
+
+$(function() {
+  io.socket.get('/coffee/joinRoom', function gotResponse(data, jwRes) {
+    console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+  });
+});
+
+io.socket.on('connect', function connected() {
+    io.socket.on('eventCompleted', function taskReceived(data) {
+        $('#taskView').html(data.message);
+        $('#taskView').effect('highlight', function(){
+          $('#taskView').fadeOut('slow');
+      });
+    });
+    io.socket.on('roomLog', function taskReceived(data) {
+        $('#taskView').html(data.message);
+        $('#taskView').effect('highlight', function(){
+            $('#taskView').fadeOut('slow');
+        });
+        console.log(data.message);
+    });
+});
+
+</script>
+
+<div style="height:30px"><div id="taskView"></div></div>
 <div class="default-page">
   <div class="main container clearfix">
     <ul class="getting-started">
@@ -16,10 +45,10 @@ setTimeout(function sunrise () {
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/225528/coffeecup.svg" alt="The hand has 5 fingers">&nbsp;Kahvia
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify?notify_id=notify_1">Keitin kahvia.</a>
+            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_1">Keitin kahvia.</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify?notify_id=notify_3">Teetä hautumassa.</a>
+            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_3">Teetä hautumassa.</a>
           </p>
         </div>
       </li>
@@ -29,19 +58,22 @@ setTimeout(function sunrise () {
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/278578/Petri-Dish.svg" alt="The hand has 5 fingers">Yleiset taskit</p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_1">Tyhjensin astianpesukoneen</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_1">Tyhjensin astianpesukoneen</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_5">Kävin kaupassa</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_5">Kävin kaupassa</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_6">Siistin keittiön</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_6">Siistin keittiön</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_7">Vein pullot</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_7">Vein pullot</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/notify?notify_id=notify_2">Juon kaljaa</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_8">Vein pahvit</a>
+          </p>
+          <p>
+            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_2">Juon kaljaa</a>
           </p>
         </div>
       </li>
@@ -51,13 +83,13 @@ setTimeout(function sunrise () {
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/73141/brush.svg" alt="The hand has 5 fingers">&nbsp;Barista</p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_2">Peruspesu</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_2">Peruspesu</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_3">Pesuainepesu</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_3">Pesuainepesu</a>
           </p>
           <p>
-            <a class="button button-primary" href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doMachineMaintenance?maintenance_id=maintenance_4">Sihdin puhdistus</a>
+            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_4">Sihdin puhdistus</a>
           </p>
         </div>
       </li>
@@ -78,8 +110,43 @@ setTimeout(function sunrise () {
       <ul class="link-list">
         <h2>Logs</h2>
           <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=1">Astianpesukone</a><br/>
-          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=2">Barista</a>
+          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=2">Barista</a><br>
+          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowHeroesGallery">Gallery of Heroes</a><br>
       </ul>
     </div>
   </div>
 </div>
+
+<script>
+
+$('.button-primary').click(function (){
+  if (doubleClickPrevent==false) {
+    doubleClickPrevent=true;
+    if ($(this).attr('maintId')!=undefined) {
+      io.socket.get('/event/'+$(this).attr('maintId'), function gotResponse(data, jwRes) {
+        console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+        doubleClickPrevent=false;
+        if (data.showModal==1) {
+          alert('Hyvä! \n'+data.message+' \n Sait '+data.points+' pistettä!');
+          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+        }
+      });
+    }
+    if ($(this).attr('notifyId')!=undefined) {
+      io.socket.get('/notify/'+$(this).attr('notifyId'), function gotResponse(data, jwRes) {
+        console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+        doubleClickPrevent=false;
+        if (data.showModal==1) {
+          alert('Hyvä! \n'+data.message+' \n Sait '+data.points+' pistettä!');
+          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+        } else {
+          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+        }
+      });
+    }
+  }
+
+
+});
+
+</script>
