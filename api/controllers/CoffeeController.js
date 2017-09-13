@@ -26,6 +26,8 @@ module.exports = {
 
     var userName = req.cookies.userName;
     var json = {};
+    var tasks = {};
+    var config = sails.config.custom;
 
     UserService.doGetAllUsers(function(err, resp) {
       json = resp;
@@ -38,13 +40,45 @@ module.exports = {
         return res.view('loginpage', json);
       }
 
+      for (task in config) {
+        if (config[task].section != undefined) {
+          if (tasks[config[task].section] == undefined) {
+            tasks[config[task].section] = [];
+            tasks[config[task].section].push(config[task]);
+          } else {
+            tasks[config[task].section].push(config[task]);
+          }
+        }
+      }
+
       MachineService.doGetMachineHistory(function(err, hist) {
         json.history = hist;
         json.moment = moment;
+        json.tasks = tasks;
         return res.view('homepage', json);
       });
 
     });
+  },
+
+  doGetPointsAndActivities: function(req, res) {
+
+    if (!req.isSocket) {
+      return res.badRequest();
+    }
+
+    UserService.doGetAllUsers(function(err, resp) {
+      json = resp;
+
+      MachineService.doGetMachineHistory(function(err, hist) {
+        json.history = hist;
+        json.moment = moment;
+        return res.json(json);
+      });
+
+    });
+
+
   },
 
   /**
@@ -62,7 +96,7 @@ module.exports = {
       return res.view('loginpage');
     }
 
-    if (notify_config==undefined || notify_cookie==notify_id) {
+    if (notify_config == undefined || notify_cookie == notify_id) {
       return res.redirect('http://' + sails.config.c_hostname + sails.config.c_port);
     } else {
 
@@ -72,11 +106,11 @@ module.exports = {
         message: notify_config.message
       };
 
-      NotifyService.sendNotifyToSlack(userName+": "+notify_config.messageToEndPoint, function(err) {
+      NotifyService.sendNotifyToSlack(userName + ": " + notify_config.messageToEndPoint, function(err) {
         if (err) {
           sails.log(err);
         }
-        if (notify_config.points>0) {
+        if (notify_config.points > 0) {
           UserService.updateUserPoints(userName, notify_config.points, function(err, data) {
             sails.log('updated user points');
           });
@@ -106,8 +140,10 @@ module.exports = {
       return res.view('loginpage');
     }
 
-    if (notify_config==undefined || notify_cookie==notify_id) {
-      return res.json({triggerRedirect: true});
+    if (notify_config == undefined || notify_cookie == notify_id) {
+      return res.json({
+        triggerRedirect: true
+      });
     } else {
 
       var options = {
@@ -116,17 +152,19 @@ module.exports = {
         message: notify_config.message
       };
 
-      NotifyService.sendNotifyToSlack(userName+": "+notify_config.messageToEndPoint, function(err) {
+      NotifyService.sendNotifyToSlack(userName + ": " + notify_config.messageToEndPoint, function(err) {
         if (err) {
           sails.log(err);
         }
-        if (notify_config.points>0) {
+        if (notify_config.points > 0) {
           UserService.updateUserPoints(userName, notify_config.points, function(err, data) {
             sails.log('updated user points');
           });
         }
 
-        sails.sockets.broadcast('mainSockets', 'eventCompleted', { message: userName+notify_config.messageToBroadcast}, req);
+        sails.sockets.broadcast('mainSockets', 'eventCompleted', {
+          message: userName + notify_config.messageToBroadcast
+        }, req);
 
         return res.json(options);
 
@@ -311,7 +349,6 @@ module.exports = {
 
   event: function(req, res) {
 
-    // Make sure this is a socket request (not traditional HTTP)
     if (!req.isSocket) {
       return res.badRequest();
     }
@@ -343,33 +380,40 @@ module.exports = {
               showModal: 1,
               message: maintenance_config.message
             };
+            sails.sockets.broadcast('mainSockets', 'eventCompleted', {
+              message: userName + " " + maintenance_config.messageToBroadcast
+            }, req);
             return res.json(options);
           });
         }
       });
     }
 
-    sails.sockets.broadcast('mainSockets', 'eventCompleted', { message: userName+" triggered an event"}, req);
   },
 
   joinRoom: function(req, res) {
 
-  // Make sure this is a socket request (not traditional HTTP)
-  if (!req.isSocket) {
-    return res.badRequest();
+    if (!req.isSocket) {
+      return res.badRequest();
+    }
+
+    var params = req.params.all();
+    var userName = req.cookies.userName;
+    var noBroadcast = req.cookies.noBroadcast;
+
+    sails.sockets.join(req, 'mainSockets');
+
+    if (noBroadcast == undefined) {
+      sails.sockets.broadcast('mainSockets', 'roomLog', {
+        message: userName + " joined the party"
+      }, req);
+    }
+
+    return res.json({
+      message: 'joined'
+    });
+
   }
-
-  var params = req.params.all();
-  var userName = req.cookies.userName;
-
-  sails.sockets.join(req, 'mainSockets');
-  sails.sockets.broadcast('mainSockets', 'roomLog', { message: userName+" joined the party"}, req);
-
-  return res.json({
-    message: 'joined'
-  });
-
-}
 
 
 };

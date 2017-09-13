@@ -10,23 +10,60 @@
 
 var doubleClickPrevent=false;
 
+function renderUsers(data) {
+  var userHTML = '';
+  for (key in data.users) {
+    if (data.users[key].name != undefined && data.users[key].name != '') {
+        userHTML = userHTML+"<p>"+data.users[key].name+" "+data.users[key].points+"</p>"
+    }
+  }
+  $('#userlist').html(userHTML);
+}
+
+function renderActivities(data) {
+  var historyHTML = '';
+  for (key in data.history) {
+    var d = moment(new Date(data.history[key].createdAt)).local().format('MMM-DD: HH:mm');
+    historyHTML = historyHTML+"<p>"+data.history[key].history_message+" "+d+"</p>";
+  }
+  $('#activitylist').html(historyHTML);
+}
+
+function render() {
+  io.socket.get('/updateView', function gotResponse(data, jwRes) {
+    console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+    renderUsers(data);
+    renderActivities(data);
+  });
+}
+
 $(function() {
   io.socket.get('/coffee/joinRoom', function gotResponse(data, jwRes) {
     console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+    $.removeCookie('noBroadcast', { path: '/' });
   });
+
+  io.socket.get('/updateView', function gotResponse(data, jwRes) {
+    console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
+    renderUsers(data);
+    renderActivities(data);
+  });
+
 });
 
 io.socket.on('connect', function connected() {
     io.socket.on('eventCompleted', function taskReceived(data) {
         $('#taskView').html(data.message);
         $('#taskView').effect('highlight', function(){
-          $('#taskView').fadeOut('slow');
+          $('#taskView').fadeOut(5000);
+          render();
       });
     });
     io.socket.on('roomLog', function taskReceived(data) {
         $('#taskView').html(data.message);
         $('#taskView').effect('highlight', function(){
-            $('#taskView').fadeOut('slow');
+            $('#taskView').fadeOut(5000);
+            render();
         });
         console.log(data.message);
     });
@@ -44,12 +81,11 @@ io.socket.on('connect', function connected() {
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/225528/coffeecup.svg" alt="The hand has 5 fingers">&nbsp;Kahvia
           </p>
+          <% _.each(tasks['1'], function(task) {%>
           <p>
-            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_1">Keitin kahvia.</a>
+            <a class="button button-primary" href="javascript:void(0)" <% if (task.maintenance_id!=undefined) { %> maintId="maintenance_<%=task.maintenance_id%>"  <% } %> <% if (task.notify_id!=undefined) { %> notifyId="notify_<%=task.notify_id%>"  <% } %> ><%=task.pageTitle%></a>
           </p>
-          <p>
-            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_3">Teetä hautumassa.</a>
-          </p>
+          <% }) %>
         </div>
       </li>
       <li class="clearfix">
@@ -57,24 +93,11 @@ io.socket.on('connect', function connected() {
           <div class="sprite two"></div>
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/278578/Petri-Dish.svg" alt="The hand has 5 fingers">Yleiset taskit</p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_1">Tyhjensin astianpesukoneen</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_5">Kävin kaupassa</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_6">Siistin keittiön</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_7">Vein pullot</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_8">Vein pahvit</a>
-          </p>
-          <p>
-            <a class="button button-primary" href="javascript:void(0)" notifyId="notify_2">Juon kaljaa</a>
-          </p>
+            <% _.each(tasks['2'], function(task) {%>
+            <p>
+              <a class="button button-primary" href="javascript:void(0)" <% if (task.maintenance_id!=undefined) { %> maintId="maintenance_<%=task.maintenance_id%>"  <% } %> <% if (task.notify_id!=undefined) { %> notifyId="notify_<%=task.notify_id%>"  <% } %> ><%=task.pageTitle%></a>
+            </p>
+            <% }) %>
         </div>
       </li>
       <li class="clearfix">
@@ -82,30 +105,22 @@ io.socket.on('connect', function connected() {
           <div class="sprite three"></div>
           <p>
             <img class="hand-has-five-fingers" src="https://openclipart.org/download/73141/brush.svg" alt="The hand has 5 fingers">&nbsp;Barista</p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_2">Peruspesu</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_3">Pesuainepesu</a>
-          </p>
-          <p>
-            <a class="button button-primary button-maint" href="javascript:void(0)" maintId="maintenance_4">Sihdin puhdistus</a>
-          </p>
+            <% _.each(tasks['3'], function(task) {%>
+            <p>
+              <a class="button button-primary" href="javascript:void(0)" <% if (task.maintenance_id!=undefined) { %> maintId="maintenance_<%=task.maintenance_id%>"  <% } %> <% if (task.notify_id!=undefined) { %> notifyId="notify_<%=task.notify_id%>"  <% } %> ><%=task.pageTitle%></a>
+            </p>
+            <% }) %>
         </div>
       </li>
     </ul>
     <div class="links">
       <ul class="link-list">
         <h2>Pisteet</h2>
-        <% _.each(users, function(user) {%>
-           <p><%=user.name%> <%=user.points%></p>
-        <% }) %>
+        <div id="userlist"></div>
       </ul>
       <ul class="link-list">
         <h2>Activity</h2>
-        <% _.each(history, function(machine) {%>
-           <%=machine.history_message%> <%= moment(machine.createdAt).local().format( 'MMM-DD: HH:mm')%> <br/>
-        <% }) %>
+        <div id="activitylist"></div>
       </ul>
       <ul class="link-list">
         <h2>Logs</h2>
@@ -127,8 +142,9 @@ $('.button-primary').click(function (){
         console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
         doubleClickPrevent=false;
         if (data.showModal==1) {
+          $.cookie("noBroadcast", 1);
           alert('Hyvä! \n'+data.message+' \n Sait '+data.points+' pistettä!');
-          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+          render();
         }
       });
     }
@@ -137,15 +153,16 @@ $('.button-primary').click(function (){
         console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
         doubleClickPrevent=false;
         if (data.showModal==1) {
+          $.cookie("noBroadcast", 1);
           alert('Hyvä! \n'+data.message+' \n Sait '+data.points+' pistettä!');
-          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+          render();
         } else {
-          window.location.replace("http://<%= sails.config.c_hostname%><%= sails.config.c_port %>");
+          $.cookie("noBroadcast", 1);
+          render();
         }
       });
     }
   }
-
 
 });
 

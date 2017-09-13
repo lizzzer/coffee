@@ -34,7 +34,8 @@ module.exports.routes = {
 
   '/': 'CoffeeController.doPage',
   '/event/:maintId': 'CoffeeController.event',
-  '/notify/:notifyId': 'CoffeeController.eventNotify'
+  '/notify/:notifyId': 'CoffeeController.eventNotify',
+  '/updateView': 'CoffeeController.doGetPointsAndActivities'
 
   /***************************************************************************
   *                                                                          *
