@@ -53,6 +53,8 @@ module.exports = {
 			}
 
 			if (!json.noWinners) {
+				var nicks = sails.config.heroes['nicks'];
+				var nick = "The " + nicks[Math.floor(Math.random() * nicks.length)];
 				var text = {
 	        "attachments": [
 	        {
@@ -60,14 +62,26 @@ module.exports = {
 	            "color": "#36a64f",
 	            "pretext": "And the week has gone yet again..",
 	            "author_name": "Philanthropist",
-	            "title": "Hero of the week award",
-	            "text": json.winnerName+" with "+json.winnerPoints+" points!\nWe salute you!",
+	            "title": "Hero of the week award!",
+							"title_link": "http://"+sails.config.c_hostname+sails.config.c_port+"/ourHeroes",
+	            "text": json.winnerName+" _"+nick+"_ with "+json.winnerPoints+" points!\n*We salute you!*",
 							"image_url": "http://icons.iconarchive.com/icons/iconshock/super-vista-business/256/trophy-icon.png",
 	            "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-	            "ts": +Math.floor(new Date().valueOf() / 1000)
+	            "ts": +Math.floor(new Date().valueOf() / 1000),
+							"mrkdwn_in": ["text"]
 	        }
 	      ]
 			};
+
+			HeroService.addHeroOfTheWeek(json.winnerName,json.winnerPoints,nick,function(err, hist) {
+				if (err) {
+					sails.log('Could not add hero: '+err);
+				} else {
+					sails.log('added weekly hero');
+				}
+
+			});
+
 			} else {
 				var text = {
 					"attachments": [

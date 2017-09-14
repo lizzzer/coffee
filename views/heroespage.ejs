@@ -1,0 +1,50 @@
+<!-- Default home page -->
+<script type="text/javascript">
+   setTimeout(function sunrise () {  }, 0);
+</script>
+
+<!-- Simply include the sails.io.js script, and a client socket will be created and auto-connected for you -->
+<script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+<style>
+  .italic {font-style:italic;font-size:16px;color:gray}
+  .heroBox {border: 1px solid rgb(200, 200, 200);
+    background: rgb(234, 234, 234);
+    padding: 5px;
+    margin: 5px;
+    height:100px}
+  .default-page {width:30%}
+  .heroTrophy {}
+  .heroDetails {font-size:16px}
+  .heroTitle {border-bottom: solid gray; border-style: groove;}
+</style>
+<script type="text/javascript">
+
+</script>
+
+
+<div class="default-page">
+  <div class="main container clearfix">
+    <ul class="getting-started">
+      <li class="clearfix">
+        <div class="step">
+          <div class="sprite one"><h2><img src="/images/crown.png" />Gallery of Heroes<img src="/images/crown.png" /></h2></div>
+        </div>
+      </li>
+      <% _.each(heroes, function(hero) {%>
+      <li>
+        <div class="step">
+          <div class="heroBox" >
+              <div class="heroTitle"><%= hero.user %> <span class="italic"><%= hero.hero_nick %></span></div>
+              <div class="clearfix" style="clear:both;padding:5px;">
+                <div class="heroDetails" style="float:left">
+                  <p>Week <%= hero.week_number %></p>
+                  <p>Points <%= hero.week_points %></p></div>
+                <div style="float:right"class="heroTrophy"><img height="70px" src="<%= hero.trophy_url %>" /> </div>
+              </div>
+          </div>
+        </div>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
+</div>
