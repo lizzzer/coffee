@@ -11,6 +11,8 @@ module.exports = {
 
     name : { type: 'string' },
 
-    points : { type: 'integer' }
+    points : { type: 'integer' },
+
+    level : { type: 'integer' }
   }
 };

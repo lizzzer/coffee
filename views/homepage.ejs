@@ -4,7 +4,7 @@
 </script>
 
 <!-- Simply include the sails.io.js script, and a client socket will be created and auto-connected for you -->
-<script type="text/javascript" src="/js/dependencies/sails.io.js"></script>
+<script type="text/javascript" src="/js/dependencies/sails.io.js" autoConnect="false"></script>
 
 <script type="text/javascript">
 
@@ -24,7 +24,7 @@ function renderActivities(data) {
   var historyHTML = '';
   for (key in data.history) {
     var d = moment(new Date(data.history[key].createdAt)).local().format('MMM-DD: HH:mm');
-    historyHTML = historyHTML+"<p>"+data.history[key].history_message+" "+d+"</p>";
+    historyHTML = historyHTML+"<p>"+data.history[key].history_message+" "+d+" - <span style='font-style:italic'>"+data.history[key].user+"</span></p>";
   }
   $('#activitylist').html(historyHTML);
 }
@@ -38,34 +38,35 @@ function render() {
 }
 
 $(function() {
-  io.socket.get('/coffee/joinRoom', function gotResponse(data, jwRes) {
-    console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
-    $.removeCookie('noBroadcast', { path: '/' });
-  });
-
   io.socket.get('/updateView', function gotResponse(data, jwRes) {
-    console.log('Server responded with status code ' + jwRes.statusCode + ' and data: ', data);
     renderUsers(data);
     renderActivities(data);
   });
 
-});
+  io.socket.on('connect', function connected() {
+      io.socket.get('/coffee/joinRoom', function gotResponse(data, jwRes) {
+        console.log('Server responded to join with status code ' + jwRes.statusCode + ' and data: ', data);
+        $.removeCookie('noBroadcast', { path: '/' });
 
-io.socket.on('connect', function connected() {
-    io.socket.on('eventCompleted', function taskReceived(data) {
-        $('#taskView').html(data.message);
-        $('#taskView').effect('highlight', function(){
-          $('#taskView').fadeOut(5000);
-          render();
-      });
-    });
-    io.socket.on('roomLog', function taskReceived(data) {
-        $('#taskView').html(data.message);
-        $('#taskView').effect('highlight', function(){
-            $('#taskView').fadeOut(5000);
-            render();
+        io.socket.on('eventCompleted', function taskReceived(data) {
+            $('#taskView').html(data.message);
+            $('#taskView').effect('highlight', function(){
+              $('#taskView').fadeOut(5000);
+              render();
+          });
         });
-    });
+
+        io.socket.on('roomLog', function taskReceived(data) {
+            $('#taskView').html(data.message);
+            $('#taskView').effect('highlight', function(){
+                $('#taskView').fadeOut(5000);
+                render();
+            });
+        });
+
+      });
+  });
+
 });
 
 </script>
@@ -125,10 +126,10 @@ io.socket.on('connect', function connected() {
         <h2>Logs</h2>
           <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=1">Astianpesukone</a><br/>
           <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowMachineMaintenance?machine_id=2">Barista</a><br>
-          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/coffee/doShowHeroesGallery">Gallery of Heroes</a><br>
+          <a href="http://<%= sails.config.c_hostname%><%= sails.config.c_port %>/ourHeroes">Gallery of Heroes</a><br>
       </ul>
     </div>
   </div>
 </div>
 
-<script src="assets/js/onload.js"></script>
+<script src="/js/onload.js"></script>

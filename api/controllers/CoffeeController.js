@@ -77,55 +77,6 @@ module.exports = {
       });
 
     });
-
-
-  },
-
-  /**
-   * `CoffeeController.notify()`
-   */
-  notify: function(req, res) {
-
-    var params = req.params.all();
-    var userName = req.cookies.userName;
-    var notify_id = params.notify_id;
-    var notify_config = sails.config.custom[notify_id];
-    var notify_cookie = req.cookies.notifyId;
-
-    if (userName == undefined) {
-      return res.view('loginpage');
-    }
-
-    if (notify_config == undefined || notify_cookie == notify_id) {
-      return res.redirect('http://' + sails.config.c_hostname + sails.config.c_port);
-    } else {
-
-      var options = {
-        points: notify_config.points,
-        showModal: 1,
-        message: notify_config.message
-      };
-
-      NotifyService.sendNotifyToSlack(userName + ": " + notify_config.messageToEndPoint, function(err) {
-        if (err) {
-          sails.log(err);
-        }
-        if (notify_config.points > 0) {
-          UserService.updateUserPoints(userName, notify_config.points, function(err, data) {
-            sails.log('updated user points');
-          });
-        }
-
-        res.cookie('notifyId', notify_id, {
-          expires: new Date(Date.now() + 36000),
-          httpOnly: true
-        });
-        sails.controllers.coffee.doPage(req, res, options);
-
-      });
-
-    }
-
   },
 
   eventNotify: function(req, res) {
@@ -234,44 +185,6 @@ module.exports = {
 
   },
 
-  doMachineMaintenance: function(req, res) {
-
-    var userName = req.cookies.userName;
-    var params = req.params.all();
-    var maintenance_id = params.maintenance_id;
-    var maintenance_config = sails.config.custom[maintenance_id];
-
-    if (userName == undefined || maintenance_config == undefined) {
-      sails.controllers.coffee.doPage(req, res);
-    } else {
-
-      MachineService.doAddRow(maintenance_config, userName, function(err, data) {
-
-        if (err) {
-          console.log("error happened");
-          var options = {
-            points: 0,
-            showModal: 1,
-            message: 'Vähän turhan innokasta. ' + err
-          };
-
-          sails.controllers.coffee.doPage(req, res, options);
-
-        } else {
-          UserService.updateUserPoints(userName, maintenance_config.points, function(err, data) {
-            var options = {
-              points: maintenance_config.points,
-              showModal: 1,
-              message: maintenance_config.message
-            };
-            sails.controllers.coffee.doPage(req, res, options);
-          });
-        }
-      });
-    }
-
-  },
-
   doDeleteMachineById: function(req, res) {
 
     var params = req.params.all();
@@ -375,6 +288,15 @@ module.exports = {
 
         } else {
           UserService.updateUserPoints(userName, maintenance_config.points, function(err, data) {
+
+            if (maintenance_config.messageToEndPoint!=undefined) {
+              NotifyService.sendNotifyToSlack(userName + ": " + maintenance_config.messageToEndPoint, function(err) {
+                if (err) {
+                  sails.log(err);
+                }
+              });
+            }
+
             var options = {
               points: maintenance_config.points,
               showModal: 1,
@@ -414,6 +336,5 @@ module.exports = {
     });
 
   }
-
 
 };
