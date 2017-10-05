@@ -15,6 +15,8 @@ module.exports = {
 
 		//});
 
+		//var level = LevelService.genNextLevel(1);
+		//console.log(level);
 		HeroService.getHeroes(function(err, heroes) {
 
 			json.heroes = heroes;

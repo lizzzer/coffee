@@ -22,7 +22,7 @@ module.exports = {
 
   },
 
-  doPage: function(req, res, options) {
+  doPage: function(req, res) {
 
     var userName = req.cookies.userName;
     var json = {};
@@ -31,10 +31,6 @@ module.exports = {
 
     UserService.doGetAllUsers(function(err, resp) {
       json = resp;
-
-      if (typeof options == 'object') {
-        json.options = options;
-      }
 
       if (userName == undefined) {
         return res.view('loginpage', json);
